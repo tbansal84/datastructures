@@ -9,6 +9,11 @@ package thoughtworks.railroad.common.exceptions;
  */
 public class TrainRouteServiceException extends Exception {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public TrainRouteServiceException() {
 		super();
 		// TODO Auto-generated constructor stub

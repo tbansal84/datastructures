@@ -3,15 +3,15 @@ package thoughtworks.problems.train;
 import org.junit.Assert;
 import org.junit.Test;
 
-import thoughtworks.problems.utils.GraphFactory;
+import thoughtworks.problems.utils.CityMapFactory;
 import thoughtworks.railroad.common.exceptions.RouteNotFoundException;
 import thoughtworks.railroad.common.exceptions.StationNotFoundException;
 import thoughtworks.railroad.domain.StationHopper;
 
-public class FIndRouteTest {
+public class FindRouteServiceTest {
 	@Test
 	public void testCase1() {
-		StationHopper hopper = new StationHopper(GraphFactory.createTestGraph());
+		StationHopper hopper = new StationHopper(CityMapFactory.createTestMap());
 		int a = 0;
 		try {
 			a = hopper.findDistance(new String[] { "A", "B", "C" });
@@ -23,7 +23,7 @@ public class FIndRouteTest {
 
 	@Test
 	public void testCase2() {
-		StationHopper hopper = new StationHopper(GraphFactory.createTestGraph());
+		StationHopper hopper = new StationHopper(CityMapFactory.createTestMap());
 		int a = 0;
 		try {
 			a = hopper.findDistance(new String[] { "A", "D" });
@@ -35,7 +35,7 @@ public class FIndRouteTest {
 
 	@Test
 	public void testCase3() {
-		StationHopper hopper = new StationHopper(GraphFactory.createTestGraph());
+		StationHopper hopper = new StationHopper(CityMapFactory.createTestMap());
 		int a = 0;
 		try {
 			a = hopper.findDistance(new String[] { "A", "D", "C" });
@@ -47,7 +47,7 @@ public class FIndRouteTest {
 
 	@Test
 	public void testCase4() {
-		StationHopper hopper = new StationHopper(GraphFactory.createTestGraph());
+		StationHopper hopper = new StationHopper(CityMapFactory.createTestMap());
 		int a = 0;
 		try {
 			a = hopper.findDistance(new String[] { "A", "E", "B", "C", "D" });
@@ -59,7 +59,7 @@ public class FIndRouteTest {
 
 	@Test(expected = RouteNotFoundException.class)
 	public void testCase5() throws StationNotFoundException, RouteNotFoundException {
-		StationHopper hopper = new StationHopper(GraphFactory.createTestGraph());
+		StationHopper hopper = new StationHopper(CityMapFactory.createTestMap());
 		int a = 0;
 		a = hopper.findDistance(new String[] { "A", "E", "D" });
 
@@ -67,7 +67,7 @@ public class FIndRouteTest {
 
 	@Test
 	public void testCase6() {
-		StationHopper hopper = new StationHopper(GraphFactory.createTestGraph());
+		StationHopper hopper = new StationHopper(CityMapFactory.createTestMap());
 		int a = 0;
 		try {
 			a = hopper.findRoutesWithTowns("C", "C", 3);
@@ -79,7 +79,7 @@ public class FIndRouteTest {
 
 	@Test
 	public void testCase7() {
-		StationHopper hopper = new StationHopper(GraphFactory.createTestGraph());
+		StationHopper hopper = new StationHopper(CityMapFactory.createTestMap());
 		int a = 0;
 		try {
 			a = hopper.findRoutesWithAbsNoOfTowns("A", "C", 4);
@@ -91,7 +91,7 @@ public class FIndRouteTest {
 
 	@Test
 	public void testCase8() {
-		StationHopper hopper = new StationHopper(GraphFactory.createTestGraph());
+		StationHopper hopper = new StationHopper(CityMapFactory.createTestMap());
 		int a = 0;
 		try {
 			a = hopper.findShortestDistance("A", "C");
@@ -103,7 +103,7 @@ public class FIndRouteTest {
 
 	@Test
 	public void testCase9() {
-		StationHopper hopper = new StationHopper(GraphFactory.createTestGraph());
+		StationHopper hopper = new StationHopper(CityMapFactory.createTestMap());
 		int a = 0;
 		try {
 			a = hopper.findShortestDistance("B", "B");
@@ -115,7 +115,7 @@ public class FIndRouteTest {
 
 	@Test
 	public void testCase10() {
-		StationHopper hopper = new StationHopper(GraphFactory.createTestGraph());
+		StationHopper hopper = new StationHopper(CityMapFactory.createTestMap());
 		int a = 0;
 		try {
 			a = hopper.findRoutesWithMaxDistance("C", "C", 30);

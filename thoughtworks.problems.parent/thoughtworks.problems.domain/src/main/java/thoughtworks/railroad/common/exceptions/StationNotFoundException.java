@@ -7,6 +7,11 @@ package thoughtworks.railroad.common.exceptions;
  */
 public class StationNotFoundException extends Exception {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3316627649763875667L;
+
 	public StationNotFoundException() {
 	}
 

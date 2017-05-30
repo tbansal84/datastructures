@@ -9,6 +9,12 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
 
+/**
+ * Utility class to read/write files
+ * 
+ * @author tbansal
+ *
+ */
 public class FileUtil {
 
 	public static Pair<List<String>, List<String>> getGraphMetaData(String path) throws IOException {

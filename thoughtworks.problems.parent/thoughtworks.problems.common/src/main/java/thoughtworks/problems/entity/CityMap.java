@@ -2,234 +2,210 @@ package thoughtworks.problems.entity;
 
 import java.util.*;
 
-import thoughtworks.problems.graphs.Edge;
+import thoughtworks.problems.graphs.StationLink;
 import thoughtworks.problems.graphs.Station;
 
 /**
- * This class models a simple, undirected graph using an incidence list
- * representation. Vertices are identified uniquely by their labels, and only
- * unique vertices are allowed. At most one Edge per vertex pair is allowed in
- * this Graph.
+ * The class represents the statio map of the city
  * 
- * Note that the Graph is designed to manage the Edges. You should not attempt
- * to manually add Edges yourself.
- * 
- * @author Michael Levet
- * @date June 09, 2015
+ * @author tbansal
+ *
  */
 public class CityMap {
 
-	private HashMap<String, Station> vertices;
-	private HashMap<Integer, Edge> edges;
+	private HashMap<String, Station> stations;
+	private HashMap<Integer, StationLink> links;
 
 	public CityMap() {
-		this.vertices = new HashMap<String, Station>();
-		this.edges = new HashMap<Integer, Edge>();
+		this.stations = new HashMap<String, Station>();
+		this.links = new HashMap<Integer, StationLink>();
 	}
 
-	/**
-	 * This constructor accepts an ArrayList<Vertex> and populates
-	 * this.vertices. If multiple Vertex objects have the same label, then the
-	 * last Vertex with the given label is used.
-	 * 
-	 * @param vertices
-	 *            The initial Vertices to populate this Graph
-	 */
 	public CityMap(ArrayList<Station> vertices) {
-		this.vertices = new HashMap<String, Station>();
-		this.edges = new HashMap<Integer, Edge>();
+		this.stations = new HashMap<String, Station>();
+		this.links = new HashMap<Integer, StationLink>();
 
 		for (Station v : vertices) {
-			this.vertices.put(v.getLabel(), v);
+			this.stations.put(v.getLabel(), v);
 		}
 
 	}
 
 	/**
-	 * This method adds am edge between Vertices one and two of weight 1, if no
-	 * Edge between these Vertices already exists in the Graph.
+	 * 
+	 * Add link between two stations
 	 * 
 	 * @param one
-	 *            The first vertex to add
 	 * @param two
-	 *            The second vertex to add
-	 * @return true iff no Edge relating one and two exists in the Graph
+	 * @return
 	 */
-	public boolean addEdge(Station one, Station two) {
-		return addEdge(one, two, 1);
+	public boolean addLink(Station one, Station two) {
+		return addLink(one, two, 1);
 	}
 
 	/**
-	 * Accepts two vertices and a weight, and adds the edge ({one, two}, weight)
-	 * iff no Edge relating one and two exists in the Graph.
+	 * 
+	 * Add link between two stations with given length
 	 * 
 	 * @param one
-	 *            The first Vertex of the Edge
 	 * @param two
-	 *            The second Vertex of the Edge
-	 * @param weight
-	 *            The weight of the Edge
-	 * @return true iff no Edge already exists in the Graph
+	 * @return
 	 */
-	public boolean addEdge(Station one, Station two, int weight) {
+	public boolean addLink(Station one, Station two, int lebgth) {
 		if (one.equals(two)) {
 			return false;
 		}
 
-		// ensures the Edge is not in the Graph
-		Edge e = new Edge(one, two, weight);
-		if (edges.containsKey(e.hashCode())) {
+		// ensures the Link is not in the Map already
+		StationLink e = new StationLink(one, two, lebgth);
+		if (links.containsKey(e.hashCode())) {
 			return false;
 		}
 
-		// and that the Edge isn't already incident to one of the vertices
-		else if (one.containsNeighbor(e) || two.containsNeighbor(e)) {
+		// and that the Link isn't already mapped ot one of the stations
+		else if (one.containsNeighbour(e) || two.containsNeighbour(e)) {
 			return false;
 		}
 
-		edges.put(e.hashCode(), e);
-		one.addNeighbor(e);
-		// two.addNeighbor(e);
+		links.put(e.hashCode(), e);
+		one.addNeighbour(e);
 		return true;
 	}
 
 	/**
 	 * 
+	 * Does the map contain this link between two staitions already
+	 * 
 	 * @param e
-	 *            The Edge to look up
-	 * @return true iff this Graph contains the Edge e
+	 * @return
 	 */
-	public boolean containsEdge(Edge e) {
+	public boolean containsLink(StationLink e) {
 		if (e.getOne() == null || e.getTwo() == null) {
 			return false;
 		}
 
-		return this.edges.containsKey(e.hashCode());
+		return this.links.containsKey(e.hashCode());
 	}
 
 	/**
-	 * This method removes the specified Edge from the Graph, including as each
-	 * vertex's incidence neighborhood.
+	 * Remove the link from the map
 	 * 
 	 * @param e
-	 *            The Edge to remove from the Graph
-	 * @return Edge The Edge removed from the Graph
+	 * @return
 	 */
-	public Edge removeEdge(Edge e) {
+	public StationLink removeLink(StationLink e) {
 		e.getOne().removeNeighbor(e);
 		e.getTwo().removeNeighbor(e);
-		return this.edges.remove(e.hashCode());
+		return this.links.remove(e.hashCode());
 	}
 
 	/**
 	 * 
-	 * @param vertex
-	 *            The Vertex to look up
-	 * @return true iff this Graph contains vertex
-	 */
-	public boolean containsVertex(Station vertex) {
-		return this.vertices.get(vertex.getLabel()) != null;
-	}
-	
-	/**
+	 * Does the map contains this station
 	 * 
 	 * @param vertex
-	 *            The Vertices labels to look up
-	 * @return true iff this Graph contains all vertices
+	 * @return
 	 */
-	public boolean containsAllVertex(List<String> vertexLabel) {
-		return this.vertexKeys().containsAll(vertexLabel);
-	}
-	
-	/**
-	 * 
-	 * @param vertex
-	 *            The Vertices labels to look up
-	 * @return true iff this Graph contains all vertices
-	 */
-	public boolean containsAllVertex(String[] vertexLabel) {
-		return this.vertexKeys().containsAll(Arrays.asList(vertexLabel));
+	public boolean containsStation(Station vertex) {
+		return this.stations.get(vertex.getLabel()) != null;
 	}
 
 	/**
+	 * Does the map contain all stations
+	 * 
+	 * @param vertexLabel
+	 * @return
+	 */
+	public boolean containsAllStations(String[] vertexLabel) {
+		return this.stationNames().containsAll(Arrays.asList(vertexLabel));
+	}
+
+	/**
+	 * 
+	 * Return the stations by its name
 	 * 
 	 * @param label
-	 *            The specified Vertex label
-	 * @return Vertex The Vertex with the specified label
+	 * @return
 	 */
-	public Station getVertex(String label) {
-		return vertices.get(label);
+	public Station getStationfromName(String label) {
+		return stations.get(label);
 	}
 
 	/**
-	 * This method adds a Vertex to the graph. If a Vertex with the same label
-	 * as the parameter exists in the Graph, the existing Vertex is overwritten
-	 * only if overwriteExisting is true. If the existing Vertex is overwritten,
-	 * the Edges incident to it are all removed from the Graph.
 	 * 
-	 * @param vertex
+	 * add a station
+	 * 
+	 * @param station
 	 * @param overwriteExisting
-	 * @return true iff vertex was added to the Graph
+	 * @return
 	 */
-	public boolean addVertex(Station vertex, boolean overwriteExisting) {
-		Station current = this.vertices.get(vertex.getLabel());
+	public boolean addStation(Station station, boolean overwriteExisting) {
+		Station current = this.stations.get(station.getLabel());
 		if (current != null) {
 			if (!overwriteExisting) {
 				return false;
 			}
 
 			while (current.getNeighborCount() > 0) {
-				this.removeEdge(current.getNeighbor(0));
+				this.removeLink(current.getNeighbour(0));
 			}
 		}
 
-		vertices.put(vertex.getLabel(), vertex);
+		stations.put(station.getLabel(), station);
 		return true;
 	}
 
 	/**
+	 * Remove the station with given name
 	 * 
-	 * @param label
-	 *            The label of the Vertex to remove
-	 * @return Vertex The removed Vertex object
+	 * @param name
+	 * @return
 	 */
-	public Station removeVertex(String label) {
-		Station v = vertices.remove(label);
+	public Station removeStation(String name) {
+		Station v = stations.remove(name);
 
 		while (v.getNeighborCount() > 0) {
-			this.removeEdge(v.getNeighbor((0)));
+			this.removeLink(v.getNeighbour((0)));
 		}
 
 		return v;
 	}
 
 	/**
+	 * Return name of all stations in city
 	 * 
-	 * @return Set<String> The unique labels of the Graph's Vertex objects
+	 * @return
 	 */
-	public Set<String> vertexKeys() {
-		return this.vertices.keySet();
+	public Set<String> stationNames() {
+		return this.stations.keySet();
 	}
 
 	/**
+	 * Return all stations in city
 	 * 
-	 * @return Set<String> vertices
+	 * @return
 	 */
-	public Collection<Station> vertices() {
-		return this.vertices.values();
+	public Collection<Station> getStations() {
+		return this.stations.values();
 	}
 
 	/**
+	 * Return all links in map
 	 * 
-	 * @return Set<Edge> The Edges of this graph
+	 * @return
 	 */
-	public Set<Edge> getEdges() {
-		return new HashSet<Edge>(this.edges.values());
+	public Set<StationLink> getLinks() {
+		return new HashSet<StationLink>(this.links.values());
 	}
 
-	public Edge getEdge(Station source,Station destination) {
+	/**
+	 * Return link between teo stations
+	 * 
+	 * @return
+	 */
+	public StationLink getLink(Station source, Station destination) {
 
-		return this.edges.get((source.getLabel() + destination.getLabel()).hashCode());
+		return this.links.get((source.getLabel() + destination.getLabel()).hashCode());
 
 	}
 

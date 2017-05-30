@@ -4,14 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import thoughtworks.problems.entity.CityMap;
-import thoughtworks.problems.graphs.Edge;
 import thoughtworks.problems.graphs.Path;
 import thoughtworks.problems.graphs.Station;
-import thoughtworks.problems.graphs.traversals.DFS;
-import thoughtworks.problems.graphs.traversals.DFSImpl;
+import thoughtworks.problems.graphs.StationLink;
+import thoughtworks.problems.graphs.traversals.DFSRouteFinderStartegyImpl;
+import thoughtworks.problems.graphs.traversals.HybridDijkstraShortestRouteFinderStrategyImpl;
 import thoughtworks.problems.graphs.traversals.SearchCondition;
-import thoughtworks.problems.graphs.traversals.ShortestRoute;
-import thoughtworks.problems.graphs.traversals.ShortestRouteImpl;
 import thoughtworks.problems.utils.PropertiesUtil;
 import thoughtworks.railroad.common.exceptions.RouteNotFoundException;
 import thoughtworks.railroad.common.exceptions.StationNotFoundException;
@@ -27,14 +25,15 @@ public class StationHopper {
 
 	private CityMap city;
 
-	private static DFS dfs;
+	private static RouteFinder routeFinder;
 
-	private static ShortestRoute shortestRoute;
+	private static ShortestRouteFinder shortestRoute;
 
 	static {
-
-		dfs = new DFSImpl();
-		shortestRoute = new ShortestRouteImpl();
+		// initialize route finder with DFS finder strategy
+		routeFinder = new RouteFinderImpl(new DFSRouteFinderStartegyImpl());
+		// init shortest route finder using Dijkstra algo startegy
+		shortestRoute = new ShortestRouteFinderImpl(new HybridDijkstraShortestRouteFinderStrategyImpl());
 
 	}
 
@@ -46,7 +45,8 @@ public class StationHopper {
 	;
 
 	/**
-	 * This operation will return the
+	 * This operation will return the no. of possible routes between source and
+	 * destination satisfying the given condition
 	 * 
 	 * @param source
 	 * @param destination
@@ -57,8 +57,8 @@ public class StationHopper {
 	 */
 	public int findAllRoutes(String source, String destination, SearchCondition cond)
 			throws StationNotFoundException, RouteNotFoundException {
-		Station sourceStation = city.getVertex(source);
-		Station destinationStation = city.getVertex(destination);
+		Station sourceStation = city.getStationfromName(source);
+		Station destinationStation = city.getStationfromName(destination);
 
 		if (sourceStation == null) {
 			throw new StationNotFoundException(PropertiesUtil.getProperty("e.station", source));
@@ -68,7 +68,7 @@ public class StationHopper {
 			throw new StationNotFoundException(PropertiesUtil.getProperty("e.station", destination));
 		}
 
-		int allRoutes = dfs.countPaths(sourceStation, cond);
+		int allRoutes = routeFinder.countPaths(sourceStation, cond);
 		if (allRoutes == 0) {
 			throw new RouteNotFoundException(
 					PropertiesUtil.getProperty("e.route", sourceStation.getLabel(), destinationStation.getLabel()));
@@ -77,10 +77,19 @@ public class StationHopper {
 
 	}
 
+	/**
+	 * The method will return the shortest route between source and destination
+	 * 
+	 * @param source
+	 * @param destination
+	 * @return
+	 * @throws StationNotFoundException
+	 * @throws RouteNotFoundException
+	 */
 	public Path findShortestRoute(String source, String destination)
 			throws StationNotFoundException, RouteNotFoundException {
-		Station sourceStation = city.getVertex(source);
-		Station destinationStation = city.getVertex(destination);
+		Station sourceStation = city.getStationfromName(source);
+		Station destinationStation = city.getStationfromName(destination);
 		if (sourceStation == null) {
 			throw new StationNotFoundException(PropertiesUtil.getProperty("e.station", source));
 		}
@@ -99,43 +108,86 @@ public class StationHopper {
 
 	}
 
+	/**
+	 * The method will return the length of shortest route between source and
+	 * destination
+	 * 
+	 * @param source
+	 * @param destination
+	 * @return
+	 * @throws StationNotFoundException
+	 * @throws RouteNotFoundException
+	 */
 	public Integer findShortestDistance(String source, String destination)
 			throws StationNotFoundException, RouteNotFoundException {
 		return findShortestRoute(source, destination).distance();
 	}
 
+	/**
+	 * The method will return the no of routes between source and destication
+	 * with exact no of stops
+	 * 
+	 * @param source
+	 * @param destination
+	 * @param noOfStops
+	 * @return
+	 * @throws StationNotFoundException
+	 * @throws RouteNotFoundException
+	 */
 	public int findRoutesWithAbsNoOfTowns(String source, String destination, final Integer noOfStops)
 			throws StationNotFoundException, RouteNotFoundException {
 		return findAllRoutes(source, destination, new SearchCondition() {
 
 			@Override
 			public boolean stop(Path path) {
-				return path.length() > noOfStops;
+				return path.noOfStations() > noOfStops;
 			}
 
 			@Override
 			public boolean add(Path path) {
-				return destination.equals(path.tail()) && path.length() == noOfStops;
+				return destination.equals(path.getLastStationName()) && path.noOfStations() == noOfStops;
 			}
 		});
 	}
 
+	/**
+	 * The method will return the no of routes between source and destination
+	 * with lesser or equal no of given stops
+	 * 
+	 * @param source
+	 * @param destination
+	 * @param maxNoOfStops
+	 * @return
+	 * @throws StationNotFoundException
+	 * @throws RouteNotFoundException
+	 */
 	public int findRoutesWithTowns(String source, String destination, Integer maxNoOfStops)
 			throws StationNotFoundException, RouteNotFoundException {
 		return findAllRoutes(source, destination, new SearchCondition() {
 
 			@Override
 			public boolean stop(Path path) {
-				return path.length() > maxNoOfStops;
+				return path.noOfStations() > maxNoOfStops;
 			}
 
 			@Override
 			public boolean add(Path path) {
-				return destination.equals(path.tail());
+				return destination.equals(path.getLastStationName());
 			}
 		});
 	}
 
+	/**
+	 * The method will return the no of routes between source and destination
+	 * with length less<distance
+	 * 
+	 * @param source
+	 * @param destination
+	 * @param distance
+	 * @return
+	 * @throws StationNotFoundException
+	 * @throws RouteNotFoundException
+	 */
 	public int findRoutesWithMaxDistance(String source, String destination, Integer distance)
 			throws StationNotFoundException, RouteNotFoundException {
 		return findAllRoutes(source, destination, new SearchCondition() {
@@ -147,26 +199,34 @@ public class StationHopper {
 
 			@Override
 			public boolean add(Path path) {
-				return destination.equals(path.tail()) && path.distance() < distance;
+				return destination.equals(path.getLastStationName()) && path.distance() < distance;
 			}
 		});
 	}
 
+	/**
+	 * The method will return the length of route covering the given station
+	 * 
+	 * @param source
+	 * @return
+	 * @throws StationNotFoundException
+	 * @throws RouteNotFoundException
+	 */
 	public Integer findDistance(String[] source) throws StationNotFoundException, RouteNotFoundException {
-		if (!city.containsAllVertex(source)) {
+		if (!city.containsAllStations(source)) {
 			throw new StationNotFoundException(PropertiesUtil.getProperty("e.station.all"));
 		}
 		List<Station> s = new ArrayList<>();
 		int distance = 0;
 		for (int i = 0; i < source.length - 1; i++) {
-			Station sourceStation = city.getVertex(source[i]);
-			Station nextStation = city.getVertex(source[i + 1]);
-			Edge edge = null;
-			if ((edge = city.getEdge(sourceStation, nextStation)) == null) {
+			Station sourceStation = city.getStationfromName(source[i]);
+			Station nextStation = city.getStationfromName(source[i + 1]);
+			StationLink edge = null;
+			if ((edge = city.getLink(sourceStation, nextStation)) == null) {
 				throw new RouteNotFoundException(
 						PropertiesUtil.getProperty("e.route", sourceStation.getLabel(), nextStation.getLabel()));
 			}
-			distance += edge.getWeight();
+			distance += edge.getLinkLength();
 		}
 		return distance;
 	}

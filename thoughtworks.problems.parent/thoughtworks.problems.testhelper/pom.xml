@@ -8,5 +8,5 @@
 		<artifactId>thoughtworks.problems.parent</artifactId>
 		<version>1.0.0</version>
 	</parent>
-	<artifactId>thoughtworks.problems.service</artifactId>
+	<artifactId>thoughtworks.problems.testhelper</artifactId>
 </project>

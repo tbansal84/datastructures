@@ -3,6 +3,12 @@ package thoughtworks.problems.utils;
 import java.text.MessageFormat;
 import java.util.*;
 
+/**
+ * Read app properties
+ * 
+ * @author tbansal
+ *
+ */
 public class PropertiesUtil {
 	private static final Map<String, String> properties = new HashMap<String, String>();
 
@@ -34,6 +40,14 @@ public class PropertiesUtil {
 		return properties;
 	}
 
+	/**
+	 * 
+	 * Return parsed value fo give property
+	 * 
+	 * @param key
+	 * @param arguments
+	 * @return
+	 */
 	public static String getProperty(String key, String... arguments) {
 		String value = getProperties().get(key);
 

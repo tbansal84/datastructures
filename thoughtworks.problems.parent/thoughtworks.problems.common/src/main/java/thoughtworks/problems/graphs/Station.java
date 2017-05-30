@@ -5,127 +5,131 @@ import java.util.ArrayList;
 import thoughtworks.problems.utils.HeapElement;
 
 /**
- * This class models a vertex in a graph. For ease of the reader, a label for
- * this vertex is required. Note that the Graph object only accepts one Vertex
- * per label, so uniqueness of labels is important. This vertex's neighborhood
- * is described by the Edges incident to it.
  * 
- * @author Michael Levet
- * @date June 09, 2015
+ * The class represents a train station
+ * 
+ * @author tbansal
+ *
  */
 public class Station implements HeapElement<Station> {
 
-	private ArrayList<Edge> neighbours;
+	private ArrayList<StationLink> neighbours;
 	private String label;
 	private Integer distance;
 
 	/**
+	 * The constructor for Station class.
 	 * 
 	 * @param label
-	 *            The unique label associated with this Vertex
+	 *            the label to be assigned to Station
 	 */
 	public Station(String label) {
 		this.label = label;
-		this.neighbours = new ArrayList<Edge>();
-	}
-
-	public Station(Station v, long maxValue) {
-		// TODO Auto-generated constructor stub
+		this.neighbours = new ArrayList<StationLink>();
 	}
 
 	/**
-	 * This method adds an Edge to the incidence neighborhood of this graph iff
-	 * the edge is not already present.
+	 * Adds a neighbour to Station.
 	 * 
 	 * @param edge
-	 *            The edge to add
 	 */
-	public void addNeighbor(Edge edge) {
+	public void addNeighbour(StationLink edge) {
 		if (this.neighbours.contains(edge)) {
 			return;
 		}
-
 		this.neighbours.add(edge);
 	}
 
 	/**
 	 * 
+	 * Does the Neighbour already exist for the station.
+	 * 
 	 * @param other
-	 *            The edge for which to search
-	 * @return true iff other is contained in this.neighborhood
+	 * @return
 	 */
-	public boolean containsNeighbor(Edge other) {
+	public boolean containsNeighbour(StationLink other) {
 		return this.neighbours.contains(other);
 	}
 
 	/**
 	 * 
+	 * Retrieve neighbour by it's index
+	 * 
 	 * @param index
-	 *            The index of the Edge to retrieve
-	 * @return Edge The Edge at the specified index in this.neighborhood
+	 * @return
 	 */
-	public Edge getNeighbor(int index) {
+	public StationLink getNeighbour(int index) {
 		return this.neighbours.get(index);
 	}
 
-	/**
-	 * 
-	 * @param index
-	 *            The index of the edge to remove from this.neighborhood
-	 * @return Edge The removed Edge
-	 */
-	Edge removeNeighbor(int index) {
-		return this.neighbours.remove(index);
-	}
-
-	/**
-	 * 
-	 * @param e
-	 *            The Edge to remove from this.neighborhood
-	 */
-	public void removeNeighbor(Edge e) {
+	public void removeNeighbor(StationLink e) {
 		this.neighbours.remove(e);
 	}
 
 	/**
+	 * Get total counts for neighbour
 	 * 
-	 * @return int The number of neighbors of this Vertex
+	 * @return
 	 */
 	public int getNeighborCount() {
 		return this.neighbours.size();
 	}
 
-	/**
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @return String The label of this Vertex
+	 * @see thoughtworks.problems.utils.HeapElement#getLabel()
 	 */
 	public String getLabel() {
 		return this.label;
 	}
 
-	/**
-	 * 
-	 * @return String A String representation of this Vertex
+	/* (non-Javadoc)
+	 * @see thoughtworks.problems.utils.HeapElement#decrease(java.lang.Integer)
 	 */
+	public void decrease(Integer i) {
+		this.distance = i;
+
+	}
+
+	/**
+	 * Return all neighbours for that station
+	 * @return
+	 */
+	public ArrayList<StationLink> getNeighbours() {
+		return new ArrayList<StationLink>(this.neighbours);
+	}
+
+	/* (non-Javadoc)
+	 * @see thoughtworks.problems.utils.HeapElement#getDistance()
+	 */
+	public Integer getDistance() {
+		return distance;
+	}
+
+	/**
+	 * @param distance
+	 */
+	public void setDistance(Integer distance) {
+		this.distance = distance;
+	}
+
+	/**
+	 * Set name for station
+	 * @param label
+	 */
+	public void setLabel(String label) {
+		this.label = label;
+	}
+
 	public String toString() {
 		return "Vertex " + label;
 	}
 
-	/**
-	 * 
-	 * @return The hash code of this Vertex's label
-	 */
 	public int hashCode() {
 		return this.label.hashCode();
 	}
 
-	/**
-	 * 
-	 * @param other
-	 *            The object to compare
-	 * @return true iff other instanceof Vertex and the two Vertex objects have
-	 *         the same label
-	 */
 	public boolean equals(Object other) {
 		if (!(other instanceof Station)) {
 			return false;
@@ -135,43 +139,8 @@ public class Station implements HeapElement<Station> {
 		return this.label.equals(v.label);
 	}
 
-	/**
-	 * 
-	 * @return ArrayList<Edge> A copy of this.neighborhood. Modifying the
-	 *         returned ArrayList will not affect the neighborhood of this
-	 *         Vertex
-	 */
-	public ArrayList<Edge> getNeighbors() {
-		return new ArrayList<Edge>(this.neighbours);
-	}
-
 	public int compareTo(Station o) {
 		return this.distance.compareTo(o.getDistance());
-	}
-
-	public void decrease(Integer i) {
-		this.distance = i;
-
-	}
-
-	public ArrayList<Edge> getNeighbours() {
-		return neighbours;
-	}
-
-	public void setNeighbours(ArrayList<Edge> neighbours) {
-		this.neighbours = neighbours;
-	}
-
-	public Integer getDistance() {
-		return distance;
-	}
-
-	public void setDistance(Integer distance) {
-		this.distance = distance;
-	}
-
-	public void setLabel(String label) {
-		this.label = label;
 	}
 
 }

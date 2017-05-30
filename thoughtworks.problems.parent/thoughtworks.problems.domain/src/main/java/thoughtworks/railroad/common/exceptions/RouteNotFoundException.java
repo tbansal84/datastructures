@@ -8,6 +8,11 @@ package thoughtworks.railroad.common.exceptions;
  */
 public class RouteNotFoundException extends Exception {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public RouteNotFoundException() {
 	}
 

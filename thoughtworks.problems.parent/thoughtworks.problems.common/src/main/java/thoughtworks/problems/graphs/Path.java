@@ -6,6 +6,11 @@ import java.util.Set;
 
 import thoughtworks.problems.utils.PropertiesUtil;
 
+/**
+ * The class represents the path from one station to another
+ * @author tbansal
+ *
+ */
 public class Path {
 
 	private List<Station> path = new ArrayList<>();
@@ -16,26 +21,44 @@ public class Path {
 		this.path.add(station);
 	}
 
-	public void removePreviousStation(int weight) {
-
-	}
-
+	/**
+	 * Return series of stations in path
+	 * 
+	 * @return
+	 */
 	public List<Station> getPath() {
 		return path;
 	}
 
+	/**
+	 * Set the series of stations on path
+	 * 
+	 * @param path
+	 */
 	public void setPath(List<Station> path) {
 		this.path = path;
 	}
 
+	/**
+	 * Get the distances for between stations on path
+	 * 
+	 * @return
+	 */
 	public List<Integer> getDistances() {
 		return distances;
 	}
 
+	/**
+	 * Set the distances for between stations on path
+	 * 
+	 * @param distances
+	 */
 	public void setDistances(List<Integer> distances) {
 		this.distances = distances;
 	}
 
+	/** Create copy of path
+	 */
 	public Path clone() {
 		Path p = new Path();
 		List<Integer> distances = new ArrayList<>();
@@ -47,7 +70,10 @@ public class Path {
 		return p;
 	}
 
-	public void removeLastElement() {
+	/**
+	 * Remove the last station from path
+	 */
+	public void removeLastStation() {
 		removeLastElement(path);
 		removeLastElement(distances);
 	}
@@ -67,10 +93,11 @@ public class Path {
 		System.out.println();
 	}
 
-	public int noOfStations() {
-		return this.path.size();
-	}
 
+	/**
+	 * Returns distance of path
+	 * @return
+	 */
 	public int distance() {
 		int i = 0;
 		for (int distance : distances) {
@@ -79,15 +106,20 @@ public class Path {
 		return i;
 	}
 
-	public int length() {
+	/**
+	 * Return no of stations on path
+	 * @return
+	 */
+	public int noOfStations() {
 		return Math.max(0, this.path.size() - 1);
 	}
 
-	public void decrease() {
-		removeLastElement(this.distances);
-	}
 
-	public String tail() {
+	/**
+	 * Return name of last station on path
+	 * @return
+	 */
+	public String getLastStationName() {
 		return path.get(path.size() - 1).getLabel();
 	}
 
